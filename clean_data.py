@@ -43,7 +43,7 @@ class Calligraphers:
 # returns path_x = np array of image matrices of size (64*64,) (i.e. path_x[0] = image #0 pixel matrix)
 # returns path_y = np array of calligraphers (i.e. path_y[0] = lqs)
 # save both as .npy files
-def load_data(pathname):
+def save_data(pathname):
     path_y = []
     path_x = []
     path = "archive/data/data/" + pathname
@@ -80,9 +80,9 @@ def show_image(image):
 
 # create numpy arrays of data and save
 def create_numpy_files():
-    x_train, y_train = load_data("train")
-    x_test, y_test = load_data("test")
-    x_valid, y_valid = load_data("validation")
+    x_train, y_train = save_data("train")
+    x_test, y_test = save_data("test")
+    x_valid, y_valid = save_data("validation")
 
 # load numpy arrays of already nice data -- must run create_numpy_files() first
 def load_data():
@@ -94,7 +94,8 @@ def load_data():
     y_valid = np.load('data/validation/y.npy', allow_pickle=True)
 
 def main():
-    load_data()
+    create_numpy_files()
+    #load_data()
 
 if __name__ == '__main__':
     main()
