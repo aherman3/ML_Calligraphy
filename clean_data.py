@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+'''
+used to clean and process kaggle data
+'''
+
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -7,6 +11,11 @@ from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 import pandas as pd
 import imageio
+import cv2
+from skimage.filters import prewitt_h,prewitt_v
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+import skimage
 
 class Calligraphers:
     def __init__(self, names):
@@ -55,28 +64,34 @@ def save_data(pathname):
         for f in fileList:
             filename = path + '/' + y + '/' + f
             im = imageio.imread(filename, as_gray=True)
+            im = hog(im)
             path_x.append(im)
             path_y.append(y)
 
     path_x = np.array(path_x)
     path_y = np.array(path_y)
 
-    print(f"Shape of training set (# of samples, widht, height): {path_x.shape}")
-    print(f"Shape of testing set (# of samples, widht, height): {path_y.shape}")
+    print(f"Shape of training set (# of samples, width, height): {path_x.shape}")
+    print(f"Shape of testing set (# of samples, width, height): {path_y.shape}")
 
     # reshape x
     path_x = path_x.reshape(-1, 64*64)
     path_x = path_x.astype('float32')
     path_x /= 255
-    np.save('data/'+pathname+'/x.npy', path_x)
-    np.save('data/'+pathname+'/y.npy', path_y)
+    np.save('hog/'+pathname+'/x.npy', path_x)
+    np.save('hog/'+pathname+'/y.npy', path_y)
     return path_x, path_y
 
 # load any image and display it
 def show_image(image):
-    image = image.reshape(64, 64)
+    image = image.reshape(64,64)
     plt.imshow(image, cmap='Greys')
     plt.show()
+
+def hog(image):
+    image = image.reshape(64,64)
+    fd, image = skimage.feature.hog(image, visualize=True)
+    return image
 
 # create numpy arrays of data and save
 def create_numpy_files():
@@ -94,8 +109,30 @@ def load_data():
     y_valid = np.load('data/validation/y.npy', allow_pickle=True)
 
 def main():
-    create_numpy_files()
-    #load_data()
+    save_data("test")
+    '''
+    x_train = np.load('data/train/x.npy', allow_pickle=True)
+    y_train = np.load('data/train/y.npy', allow_pickle=True)
+    x_valid = np.load('data/validation/x.npy', allow_pickle=True)
+    y_valid = np.load('data/validation/y.npy', allow_pickle=True)
+    hog(x_train[1])
+
+    x_train_hu = []
+    for x in x_train:
+        f = hog(x)
+        x_train_hu.append(f)
+
+    x_valid_hu = []
+    for x in x_valid:
+        f = hog(x)
+        x_valid_hu.append(f)
+
+    k = 1
+    neigh = KNeighborsClassifier(n_neighbors=k, weights='distance', n_jobs=-1, p=2)
+    neigh.fit(x_train_hu, y_train)
+    y_pred = neigh.predict(x_valid_hu)
+    print(f'kneighbor k={k} accuracy={accuracy_score(y_valid, y_pred)}')
+    '''
 
 if __name__ == '__main__':
     main()
