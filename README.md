@@ -1,6 +1,5 @@
 # Chinese Calligraphy Classification by Calligrapher
-Annie Hermann
-Yunxiang Yan
+Annie Hermann & Yunxiang Yan
 
 This Github was used solely for image processing and CRC job submission. The bulk of our code resides in our drive folder here  
 
