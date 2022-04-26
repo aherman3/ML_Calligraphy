@@ -1,4 +1,4 @@
-# ML_Calligraphy
+# Chinese Calligraphy Classification by Calligrapher
 Annie Hermann
 Yunxiang Yan
 
